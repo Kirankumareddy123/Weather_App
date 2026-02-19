@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Weather App</h1>
+        
+        <form id="searchForm" class="search-form">
+            <div class="search-container">
+                <input type="text" id="cityInput" placeholder="Enter city name..." autocomplete="off">
+                <div id="suggestions" class="suggestions"></div>
+            </div>
+            <button type="submit">Search</button>
+            <button type="button" id="locateBtn">Use Location</button>
+        </form>
+        
+        <div id="status" class="status">Enter city name or use location</div>
+        
+        <div id="loader" class="loader">
+            <div class="spinner"></div>
+        </div>
+        
+        <div class="weather-card">
+            <div class="weather-header">
+                <h2 id="cityName">Select a city</h2>
+                <p id="dateTime">Search for weather</p>
+                <div id="locationDetails" class="location-details"></div>
+            </div>
+            
+            <div class="weather-main">
+                <img id="weatherIcon" src="https://openweathermap.org/img/wn/01d@2x.png" alt="Weather icon">
+                <div class="temperature">
+                    <span id="temperature">--</span>°C
+                </div>
+            </div>
+            
+            <div class="weather-details">
+                <p id="description">Weather details will appear here</p>
+                
+                <div class="metrics">
+                    <div class="metric">
+                        <span>Humidity</span>
+                        <span id="humidity">--%</span>
+                    </div>
+                    <div class="metric">
+                        <span>Wind Speed</span>
+                        <span id="windSpeed">-- km/h</span>
+                    </div>
+                    <div class="metric">
+                        <span>Pressure</span>
+                        <span id="pressure">-- hPa</span>
+                    </div>
+                    <div class="metric">
+                        <span>Visibility</span>
+                        <span id="visibility">-- km</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="charts-container">
+            <div class="chart-card">
+                <h3>5-Day Temperature Forecast</h3>
+                <canvas id="temperatureChart" width="400" height="200"></canvas>
+            </div>
+            
+            <div class="chart-card">
+                <h3>5-Day Wind Speed</h3>
+                <canvas id="windChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
