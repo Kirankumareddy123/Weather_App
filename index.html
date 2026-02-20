@@ -1,81 +1,92 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Modern, responsive Weather App using Open-Meteo. Search by city to view temperature, conditions, humidity, wind, and local date/time, with animated overview and intraday graph." />
+  <meta name="theme-color" content="#0ea5e9" />
+  <title>Weather App — Open-Meteo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://open-meteo.com" crossorigin>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <h1>Weather App</h1>
-        
-        <form id="searchForm" class="search-form">
-            <div class="search-container">
-                <input type="text" id="cityInput" placeholder="Enter city name..." autocomplete="off">
-                <div id="suggestions" class="suggestions"></div>
+  <!-- Animated ribbons for attractive overview background -->
+  <div class="bg-ribbon r1" aria-hidden="true"></div>
+  <div class="bg-ribbon r2" aria-hidden="true"></div>
+  <div class="bg-ribbon r3" aria-hidden="true"></div>
+
+  <div class="app">
+    <header class="app-header">
+      <div class="app-title">
+        <span>Weather Console</span>
+        <span class="badge">Open-Meteo</span>
+      </div>
+    </header>
+
+    <main>
+      <!-- Search with typeahead suggestions -->
+      <form class="panel search-bar" id="searchForm" role="search" aria-label="Search city weather">
+        <label for="cityInput">City</label>
+        <input id="cityInput" class="search-input" name="city" type="text" placeholder="Search city (e.g., London, Tokyo, New York)" autocomplete="off" required aria-required="true" aria-haspopup="listbox" aria-expanded="false" aria-controls="suggestions" />
+        <div id="suggestions" class="suggestions" role="listbox" aria-label="City suggestions"></div>
+        <button class="locate-btn" type="button" id="locateBtn" aria-label="Use my location">Use My Location</button>
+        <button class="search-btn" type="submit" aria-label="Search">Search</button>
+      </form>
+
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+
+      <!-- Overview card (hero) with animated ring and weather details) -->
+      <section class="panel weather-card overview" aria-live="polite" aria-busy="false">
+        <div class="loader" id="loader" aria-hidden="true"><div class="spinner" aria-label="Loading"></div></div>
+
+        <div class="left">
+          <div class="weather-head">
+            <div class="place">
+              <div class="city" id="cityName">—</div>
+              <div class="datetime" id="dateTime">Search for a city to view the weather</div>
+              <div class="area" id="areaInfo"></div>
+              <div class="accuracy" id="accuracyInfo"></div>
             </div>
-            <button type="submit">Search</button>
-            <button type="button" id="locateBtn">Use Location</button>
-        </form>
-        
-        <div id="status" class="status">Enter city name or use location</div>
-        
-        <div id="loader" class="loader">
-            <div class="spinner"></div>
+            <div class="hero">
+              <img id="icon" class="weather-icon" src="https://openweathermap.org/img/wn/01d@2x.png" alt="Weather icon" />
+              <div class="temp" id="temperature">--°C</div>
+            </div>
+          </div>
+          <div class="desc" id="description">Weather details will appear here.</div>
         </div>
-        
-        <div class="weather-card">
-            <div class="weather-header">
-                <h2 id="cityName">Select a city</h2>
-                <p id="dateTime">Search for weather</p>
-                <div id="locationDetails" class="location-details"></div>
+
+        <div class="right">
+          <div class="metrics">
+            <div class="metric">
+              <div class="label">Humidity</div>
+              <div class="value" id="humidity">--%</div>
             </div>
-            
-            <div class="weather-main">
-                <img id="weatherIcon" src="https://openweathermap.org/img/wn/01d@2x.png" alt="Weather icon">
-                <div class="temperature">
-                    <span id="temperature">--</span>°C
-                </div>
+            <div class="metric">
+              <div class="label">Wind</div>
+              <div class="value" id="wind">-- km/h</div>
             </div>
-            
-            <div class="weather-details">
-                <p id="description">Weather details will appear here</p>
-                
-                <div class="metrics">
-                    <div class="metric">
-                        <span>Humidity</span>
-                        <span id="humidity">--%</span>
-                    </div>
-                    <div class="metric">
-                        <span>Wind Speed</span>
-                        <span id="windSpeed">-- km/h</span>
-                    </div>
-                    <div class="metric">
-                        <span>Pressure</span>
-                        <span id="pressure">-- hPa</span>
-                    </div>
-                    <div class="metric">
-                        <span>Visibility</span>
-                        <span id="visibility">-- km</span>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-        
-        <div class="charts-container">
-            <div class="chart-card">
-                <h3>5-Day Temperature Forecast</h3>
-                <canvas id="temperatureChart" width="400" height="200"></canvas>
-            </div>
-            
-            <div class="chart-card">
-                <h3>5-Day Wind Speed</h3>
-                <canvas id="windChart" width="400" height="200"></canvas>
-            </div>
+      </section>
+
+      <!-- Intraday temperature line chart -->
+      <section class="panel chart-card" aria-live="polite">
+        <div class="chart-title">
+          <span>Today’s Temperature</span>
+          <small id="chartSubtitle">—</small>
         </div>
-    </div>
-    
-    <script src="script.js"></script>
+        <canvas id="tempChart" width="800" height="260" aria-label="Today temperature chart" role="img"></canvas>
+      </section>
+
+      <footer>
+        Built with HTML, CSS, and JavaScript. Data by Open-Meteo.
+      </footer>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
